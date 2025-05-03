@@ -59,6 +59,19 @@ export const createCarros = async (req, res) => {
     }
   };
 
+ export const getByIdCarro = async (req,res)=>{
+    const { id } = req.params;
+    try {
+        const carro = await prisma.carro.findUnique({ where: { id: Number(id) } });
+        if (!carro) return res.status(404).json({ message: 'Carro não encontrado.' });
+        res.status(200).json(carro);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erro ao buscar carro.' });
+    }
+  }
+
+
 // PUT – Admin: atualizar carro
 export const updateCarro = async (req, res) => {
     const { id } = req.params;
