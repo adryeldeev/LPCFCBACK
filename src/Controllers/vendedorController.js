@@ -1,4 +1,5 @@
-import prisma from '../prisma/client.js';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient(); // ajuste o caminho se precisar
 
 // GET – Público: listar todos os vendedores
 export const getAllVendedores = async (req, res) => {

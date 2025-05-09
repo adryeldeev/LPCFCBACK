@@ -13,17 +13,32 @@ CREATE TABLE `User` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `Vendedor` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `nome` VARCHAR(191) NOT NULL,
+    `telefone` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    UNIQUE INDEX `Vendedor_telefone_key`(`telefone`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Carro` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `modelo` VARCHAR(191) NOT NULL,
     `ano` INTEGER NOT NULL,
     `preco` DOUBLE NOT NULL,
+    `quilometragem` INTEGER NULL,
+    `cor` VARCHAR(191) NULL,
+    `combustivel` VARCHAR(191) NULL,
+    `cambio` VARCHAR(191) NULL,
+    `portas` INTEGER NULL,
+    `descricao` VARCHAR(191) NULL,
+    `imagem` VARCHAR(191) NULL,
     `destaque` BOOLEAN NOT NULL DEFAULT false,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `userId` INTEGER NOT NULL,
+    `updatedAt` DATETIME(3) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- AddForeignKey
-ALTER TABLE `Carro` ADD CONSTRAINT `Carro_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -1,4 +1,5 @@
-import prisma from '../prisma/client.js';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient(); // ajuste o caminho se precisar
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';

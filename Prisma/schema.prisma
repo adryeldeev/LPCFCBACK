@@ -24,6 +24,8 @@ model Vendedor {
   createdAt DateTime @default(now())
 }
 
+
+
 model Carro {
   id            Int       @id @default(autoincrement())
   modelo        String

@@ -1,6 +1,7 @@
-import bcrypt from 'bcryptjs';
-import prisma from '../prisma/client';
-import { generateToken } from '../Utils/generateToken';
+import bcrypt from 'bcrypt';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient(); // ajuste o caminho se precisar
+import { generateToken } from '../Utils/generateToken.js';
 
 export const createAdmin = async (req, res) => {
   const { name, email, password } = req.body;

@@ -1,6 +1,8 @@
-import bcrypt from 'bcryptjs';
-import prisma from '../prisma/client';
-import { generateToken } from '../Utils/generateToken';
+import bcrypt from 'bcrypt';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient(); // ajuste o caminho se precisar
+
+import { generateToken } from '../Utils/generateToken.js';
 
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
@@ -51,5 +53,6 @@ export const loginUser = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ message: 'Erro ao fazer login' });
+    console.log('Erro ao fazer login', err)
   }
 };

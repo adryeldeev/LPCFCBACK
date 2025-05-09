@@ -12,3 +12,6 @@ router.get('/vendedores', getAllVendedores)
 router.post('/vendedores', authenticateToken, checkAdmin, createVendedor);
 router.put('/vendedores/:id', authenticateToken, checkAdmin, updateVendedor);
 router.delete('/vendedores/:id', authenticateToken, checkAdmin, deleteVendedor);
+
+
+export default router
