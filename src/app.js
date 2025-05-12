@@ -1,6 +1,7 @@
-// filepath: c:\Users\adrye\Desktop\BackLPFC\src\app.js
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -9,6 +10,8 @@ import vendedorRoutes from './Routes/vendedorRoutes.js';
 import carrosRoutes from './Routes/CarroRoutes.js';
 import adminRoutes from './Routes/adminRoutes.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const app = express();
 
 // Habilita CORS
@@ -17,10 +20,15 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Middleware para processar JSON
 app.use(express.json());
 
-// Configura uploads para a pasta 'uploads'
-app.use('./Uploads', express.static('Uploads'));
+// Middleware para processar dados de formulários
+app.use(express.urlencoded({ extended: true }));
+
+// Configura uploads para a pasta 'Uploads'
+app.use('/uploads', express.static(path.join(__dirname, 'Uploads')));
 
 // Registra as rotas
 app.use(authRoutes); // Rotas de autenticação

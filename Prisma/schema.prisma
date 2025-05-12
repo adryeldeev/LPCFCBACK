@@ -7,27 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Vendedor {
-  id        Int      @id @default(autoincrement())
-  nome      String
-  telefone  String   @unique
-  createdAt DateTime @default(now())
-}
-
-
-
-model Carro {
-  id            Int       @id @default(autoincrement())
+model carro {
+  id            Int      @id @default(autoincrement())
   modelo        String
   ano           Int
   preco         Float
@@ -38,13 +19,36 @@ model Carro {
   portas        Int?
   descricao     String?
   imagem        String?
-  destaque      Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  destaque      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime
+  marca         String   @db.VarChar(255)
 }
 
-enum Role {
+model imagem {
+  id      Int    @id @default(autoincrement())
+  url     String
+  carroId Int
+}
+
+model user {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique(map: "User_email_key")
+  password  String
+  role      user_role @default(USER)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime
+}
+
+model vendedor {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  telefone  String   @unique(map: "Vendedor_telefone_key")
+  createdAt DateTime @default(now())
+}
+
+enum user_role {
   ADMIN
   USER
 }
-
