@@ -12,11 +12,8 @@ const __dirname = path.dirname(__filename);
 export const getAllCarrosDestaque = async (req, res) => {
   try {
     
-    //verificar se já teve 3 destaques
-    const count = await prisma.carro.count({ where: { destaque: true } });
-    if (count >= 3) {
-      return res.status(400).json({ message: 'Máximo de 3 carros em destaque já atingido.' });
-    }
+    
+  
 
     const destaques = await prisma.carro.findMany({
       where: { destaque: true },
@@ -31,22 +28,14 @@ export const getAllCarrosDestaque = async (req, res) => {
 
 // GET – Público: todos os carros
 export const getAllCarros = async (req, res) => {
-  const { page = 1, limit = 3 } = req.query;
-  const offset = (page - 1) * limit;
+  
   try {
-    const total = await prisma.carro.count();
     const carros = await prisma.carro.findMany({
-      skip: offset,
-      take: Number(limit),
       orderBy: { createdAt: 'desc' },
       include: { imagens: true }
     });
-    res.status(200).json({
-      total,
-      page: Number(page),
-      limit: Number(limit),
-      carros
-    });
+
+    res.status(200).json(carros);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Erro ao buscar carros.' });
@@ -55,8 +44,7 @@ export const getAllCarros = async (req, res) => {
 
 // POST – Admin: criar carro com múltiplas imagens
 export const createCarros = async (req, res) => {
-console.log("Dados recebidos no backend:", req.body);
-console.log("Arquivos recebidos no backend:", req.files);
+
   const {
     modelo,
     marca,
