@@ -22,9 +22,16 @@ model carro {
   destaque      Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime
-  marca         String   @db.VarChar(255)
-}
+  marcaId       Int
+  marca         marca    @relation(fields: [marcaId], references: [id])
 
+}
+model marca {
+  id     Int     @id @default(autoincrement())
+  nome   String  @unique
+  logo   String
+  carros carro[] // Relacionamento com os carros
+}
 model imagem {
   id      Int    @id @default(autoincrement())
   url     String
@@ -38,7 +45,8 @@ model user {
   password  String
   role      user_role @default(USER)
   createdAt DateTime  @default(now())
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
+
 }
 
 model vendedor {

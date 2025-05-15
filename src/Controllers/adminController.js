@@ -5,6 +5,7 @@ import { generateToken } from '../Utils/generateToken.js';
 
 export const createAdmin = async (req, res) => {
   const { name, email, password } = req.body;
+  
 
   try {
     const userExists = await prisma.user.findUnique({ where: { email } });
@@ -17,7 +18,7 @@ export const createAdmin = async (req, res) => {
         name,
         email,
         password: hashedPassword,
-        role: 'ADMIN',
+        role: 'ADMIN'
       },
     });
 

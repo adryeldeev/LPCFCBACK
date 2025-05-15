@@ -9,6 +9,7 @@ import authRoutes from './Routes/authRoutes.js';
 import vendedorRoutes from './Routes/vendedorRoutes.js';
 import carrosRoutes from './Routes/CarroRoutes.js';
 import adminRoutes from './Routes/adminRoutes.js';
+import MarcaRoutes from './Routes/MarcaRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,12 +30,11 @@ app.use(express.urlencoded({ extended: true }));
 
 // Configura uploads para a pasta 'Uploads'
 app.use('/uploads', express.static(path.join(__dirname, 'Uploads')));
-
-// Registra as rotas
 app.use(authRoutes); // Rotas de autenticação
 app.use(vendedorRoutes); // Rotas de vendedores
 app.use(carrosRoutes); // Rotas de carros
 app.use(adminRoutes); // Rotas de administradores
+app.use(MarcaRoutes); // Rotas de marcas
 
 const port = process.env.PORT || 8000;
 
