@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient(); // ajuste o caminho se precisar
 // Criar marca
 export const createMarca = async (req, res) => {
+  
   try {
     const { nome } = req.body;
 

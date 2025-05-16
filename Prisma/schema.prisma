@@ -8,7 +8,7 @@ datasource db {
 }
 
 model carro {
-  id            Int      @id @default(autoincrement())
+  id            Int       @id @default(autoincrement())
   modelo        String
   ano           Int
   preco         Float
@@ -19,23 +19,26 @@ model carro {
   portas        Int?
   descricao     String?
   imagem        String?
-  destaque      Boolean  @default(false)
-  createdAt     DateTime @default(now())
+  destaque      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
   updatedAt     DateTime
   marcaId       Int
-  marca         marca    @relation(fields: [marcaId], references: [id])
-
+  marca         marca     @relation(fields: [marcaId], references: [id])
+  imagens       imagem[]  // Relacionamento com imagens
 }
+
 model marca {
   id     Int     @id @default(autoincrement())
   nome   String  @unique
   logo   String
   carros carro[] // Relacionamento com os carros
 }
+
 model imagem {
   id      Int    @id @default(autoincrement())
   url     String
   carroId Int
+  carro   carro  @relation(fields: [carroId], references: [id]) // Relacionamento com carro
 }
 
 model user {
@@ -45,8 +48,7 @@ model user {
   password  String
   role      user_role @default(USER)
   createdAt DateTime  @default(now())
-  updatedAt DateTime @updatedAt
-
+  updatedAt DateTime  @updatedAt
 }
 
 model vendedor {

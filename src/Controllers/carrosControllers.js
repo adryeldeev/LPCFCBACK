@@ -11,14 +11,13 @@ const __dirname = path.dirname(__filename);
 // GET – Público: carros em destaque
 export const getAllCarrosDestaque = async (req, res) => {
   try {
-    
-    
-  
-
     const destaques = await prisma.carro.findMany({
       where: { destaque: true },
       orderBy: { createdAt: 'desc' },
-      include: { imagens: true }
+      include: { imagens: true },
+
+
+
     });
     res.status(200).json(destaques);
   } catch (error) {
