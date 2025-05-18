@@ -1,8 +1,9 @@
-import { prisma } from "../lib/prisma"; // ajuste o caminho conforme seu projeto
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient(); // ajuste o caminho se precisar
 import nodemailer from "nodemailer";
 
 export const criarPropostaVenda = async (req, res) => {
-  const { nome, telefone, whatsapp, email } = req.body;
+  const { nome, telefone, whatsapp, email, veiculo } = req.body;
 
   try {
     // Salva no banco
@@ -12,6 +13,7 @@ export const criarPropostaVenda = async (req, res) => {
         telefone,
         whatsapp: Boolean(whatsapp),
         email,
+        veiculo
       },
     });
 
@@ -27,10 +29,12 @@ export const criarPropostaVenda = async (req, res) => {
     // Conteúdo do e-mail
     const emailHtml = `
       <h2>Nova proposta de venda recebida</h2>
+      <p><strong>Veículo:</strong> ${veiculo}</p>
       <p><strong>Nome:</strong> ${nome}</p>
       <p><strong>Telefone:</strong> ${telefone}</p>
       <p><strong>WhatsApp?:</strong> ${whatsapp ? "Sim" : "Não"}</p>
       <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Data da Proposta:</strong> ${new Date().toLocaleDateString()}</p>
     `;
 
     // Enviar o e-mail para o dono da loja
