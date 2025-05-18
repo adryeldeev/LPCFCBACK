@@ -66,11 +66,28 @@ CREATE TABLE `vendedor` (
 -- CreateTable
 CREATE TABLE `propostaVenda` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `veiculo` VARCHAR(191) NOT NULL,
     `nome` VARCHAR(191) NOT NULL,
     `telefone` VARCHAR(191) NOT NULL,
     `whatsapp` BOOLEAN NOT NULL DEFAULT false,
     `email` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `financiamento` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `veiculo` VARCHAR(191) NOT NULL,
+    `nome` VARCHAR(191) NOT NULL,
+    `telefone` VARCHAR(191) NOT NULL,
+    `whatsapp` BOOLEAN NOT NULL DEFAULT false,
+    `email` VARCHAR(191) NOT NULL,
+    `dataNascimento` DATETIME(3) NULL,
+    `cpf` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
