@@ -30,6 +30,19 @@ export const createMarca = async (req, res) => {
     return res.status(500).json({ error: "Erro interno" });
   }
 };
+// Listar todas as marcas
+
+export const getAllMarcas = async (req,res)=>{
+  try {
+    const marcas = await prisma.marca.findMany();
+    return res.json(marcas);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Erro interno" });
+  }
+}
+
+
 
 // Listar todas
 export const getMarcas = async (_req , res) => {
@@ -41,6 +54,24 @@ export const getMarcas = async (_req , res) => {
     return res.status(500).json({ error: "Erro interno" });
   }
 };
+
+// Listar por ID
+export const getByIdMarcas = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const marca = await prisma.marca.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!marca) return res.status(404).json({ error: "Marca não encontrada" });
+
+    return res.json(marca);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Erro interno" });
+  }
+};
+
 
 // Editar marca
 export const updateMarca = async (req, res) => {

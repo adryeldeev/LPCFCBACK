@@ -18,7 +18,7 @@ export const criarPropostaFinanciamento = async (req, res) => {
     };
 
     // Salva no banco
-    const proposta = await prisma.propostaFinanciamento.create({
+    const proposta = await prisma.financiamento.create({
       data: propostaData,
     });
 
@@ -60,7 +60,7 @@ export const criarPropostaFinanciamento = async (req, res) => {
 };
 export const listarPropostasFinanciamento = async (req, res) => {
   try {
-    const propostas = await prisma.propostaFinanciamento.findMany({
+    const propostas = await prisma.financiamento.findMany({
       orderBy: {
         createdAt: "desc",
       },
@@ -74,7 +74,7 @@ export const listarPropostasFinanciamento = async (req, res) => {
 export const deletarPropostaFinanciamento = async (req, res) => {
   const { id } = req.params;
   try {
-    const proposta = await prisma.propostaFinanciamento.delete({
+    const proposta = await prisma.financiamento.delete({
       where: { id: Number(id) },
     });
     res.status(200).json({ message: "Proposta deletada com sucesso!" });

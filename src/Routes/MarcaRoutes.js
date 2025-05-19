@@ -6,7 +6,7 @@ import { checkAdmin } from '../Middlewares/adminMiddleware.js';
 import { authenticateToken } from '../Middlewares/authMiddleware.js';
 
 import convertTypesMiddleware from '../Middlewares/convertMiddleware.js';
-import { createMarca, deleteMarca, getMarcas, updateMarca } from '../Controllers/marcaController.js';
+import { createMarca, deleteMarca, getAllMarcas, getByIdMarcas, getMarcas, updateMarca } from '../Controllers/marcaController.js';
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -29,7 +29,7 @@ const upload = multer({
     storage,
     fileFilter: (req, file, cb) => {
         const allowedTypes = [
-            "image/jpeg", "image/png", "image/jpg", // Imagens
+            "image/jpeg", "image/png", "image/jpg", "image/webp", // Imagens
             "application/pdf", // PDFs
             "application/msword", // .doc
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document" // .docx
@@ -45,12 +45,13 @@ const upload = multer({
 const router = express.Router();
 
 // Público – usado na landing page
-// Público
-router.get('/marcas',  authenticateToken, checkAdmin,getMarcas);
+router.get('/marcas-all', getAllMarcas);           // Todas as marcas, sem filtro – público
+router.get('/marca/:id', getByIdMarcas);           // Marca por ID – público
 
-// Protegidas – apenas ADMIN pode manipular carros
-router.post('/marca', authenticateToken ,checkAdmin, upload.single('imagem'), convertTypesMiddleware, createMarca);
-router.put('/marca/:id', authenticateToken, checkAdmin, upload.single('imagem'), updateMarca)
+// Admin – precisa de autenticação e permissão
+router.get('/marcas', authenticateToken, checkAdmin, getMarcas); // Lista para painel admin
+router.post('/marca', authenticateToken, checkAdmin, upload.single('imagem'), convertTypesMiddleware, createMarca);
+router.put('/marca/:id', authenticateToken, checkAdmin, upload.single('imagem'), updateMarca);
 router.delete('/marca/:id', authenticateToken, checkAdmin, deleteMarca);
 
 export default router;

@@ -28,7 +28,7 @@ const upload = multer({
     storage,
     fileFilter: (req, file, cb) => {
         const allowedTypes = [
-            "image/jpeg", "image/png", "image/jpg", // Imagens
+            "image/jpeg", "image/png", "image/jpg","image/webp", // Imagens
             "application/pdf", // PDFs
             "application/msword", // .doc
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document" // .docx
@@ -47,6 +47,8 @@ const router = express.Router();
 // Público
 router.get('/destaques', getAllCarrosDestaque);
 router.get('/carros',  authenticateToken, checkAdmin,getAllCarros);
+router.get('/carros-all' ,getAllCarros);
+
 router.get('/carro/:id', getByIdCarro);
 
 // Protegidas – apenas ADMIN pode manipular carros

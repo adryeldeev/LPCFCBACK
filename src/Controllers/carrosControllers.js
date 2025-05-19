@@ -69,7 +69,11 @@ export const createCarros = async (req, res) => {
       return res.status(400).json({ message: "O campo 'preco' deve ser um número válido." });
     }
     if (modelo !== undefined) data.modelo = modelo;
-    if(marca !== undefined) data.marca = marca;
+    if (marca !== undefined) {
+  data.marca = {
+    connect: { id: Number(marca) }
+  };
+}
     if (ano !== undefined) data.ano = parseInt(ano, 10); // Converte para Int
     if (preco !== undefined) data.preco = parseFloat(preco.replace(",", "")); // Converte para Float
     if (quilometragem !== undefined) data.quilometragem = parseInt(quilometragem, 10);
@@ -108,7 +112,9 @@ export const getByIdCarro = async (req, res) => {
   try {
     const carro = await prisma.carro.findUnique({
       where: { id: Number(id) },
-      include: { imagens: true }
+      include: { imagens: true , marca:true},
+      
+
     });
     if (!carro) return res.status(404).json({ message: 'Carro não encontrado.' });
     res.status(200).json(carro);
@@ -154,7 +160,11 @@ export const updateCarro = async (req, res) => {
 
     const data = {};
     if (modelo !== undefined) data.modelo = modelo;
-    if (marca !== undefined) data.marca = marca;
+    if (marca !== undefined) {
+  data.marca = {
+    connect: { id: Number(marca) }
+  };
+}
     if (ano !== undefined) data.ano = ano;
     if (preco !== undefined) data.preco = preco;
     if (quilometragem !== undefined) data.quilometragem = quilometragem;

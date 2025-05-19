@@ -9,6 +9,7 @@ const router = express.Router();
 
 // Público – usado na landing page
 router.get('/vendedores',authenticateToken, checkAdmin, getAllVendedores)
+router.get('/vendedores-all', getAllVendedores)
 router.post('/vendedores', authenticateToken, checkAdmin, createVendedor);
 router.put('/vendedores/:id', authenticateToken, checkAdmin, updateVendedor);
 router.delete('/vendedores/:id', authenticateToken, checkAdmin, deleteVendedor);
