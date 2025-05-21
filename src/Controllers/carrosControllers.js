@@ -31,7 +31,7 @@ export const getAllCarros = async (req, res) => {
   try {
     const carros = await prisma.carro.findMany({
       orderBy: { createdAt: 'desc' },
-      include: { imagens: true }
+       include: { imagens: true , marca:true},
     });
 
     res.status(200).json(carros);
@@ -78,7 +78,9 @@ export const createCarros = async (req, res) => {
     if (preco !== undefined) data.preco = parseFloat(preco.replace(",", "")); // Converte para Float
     if (quilometragem !== undefined) data.quilometragem = parseInt(quilometragem, 10);
     if (portas !== undefined) data.portas = parseInt(portas, 10);
-    if (destaque !== undefined) data.destaque = destaque === "true"; // Converte para Boolean // Converte para Boolean
+    if (destaque !== undefined) {
+  data.destaque = destaque === "true" || destaque === true || destaque === 1 || destaque === "1";
+}
 
     if (cor !== undefined) data.cor = cor;
     if (combustivel !== undefined) data.combustivel = combustivel;

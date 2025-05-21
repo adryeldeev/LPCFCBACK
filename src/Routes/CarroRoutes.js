@@ -52,8 +52,8 @@ router.get('/carros-all' ,getAllCarros);
 router.get('/carro/:id', getByIdCarro);
 
 // Protegidas – apenas ADMIN pode manipular carros
-router.post('/carro', authenticateToken ,checkAdmin, upload.array('imagens', 5), convertTypesMiddleware, createCarros);
-router.put('/carro/:id', authenticateToken, checkAdmin, upload.array('imagens', 5), updateCarro)
+router.post('/carro', authenticateToken ,checkAdmin, upload.array('imagens', 10), convertTypesMiddleware, createCarros);
+router.put('/carro/:id', authenticateToken, checkAdmin, upload.array('imagens', 10), updateCarro)
 router.delete('/carro/:id', authenticateToken, checkAdmin, deleteCarro);
 
 export default router;
