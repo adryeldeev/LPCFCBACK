@@ -19,12 +19,15 @@ export const criarPropostaVenda = async (req, res) => {
 
     // Configurar o transporte do e-mail
     const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_REMETENTE, // e-mail do remetente
-        pass: process.env.SENHA_REMETENTE, // senha ou app password
-      },
-    });
+     service: 'gmail',
+     auth: {
+       user: process.env.EMAIL_REMETENTE,
+       pass: process.env.SENHA_REMETENTE,
+     },
+     tls: {
+       rejectUnauthorized: false, // 👈 Isso ignora o certificado autoassinado
+     },
+   });
 
     // Conteúdo do e-mail
     const emailHtml = `
@@ -39,7 +42,7 @@ export const criarPropostaVenda = async (req, res) => {
 
     // Enviar o e-mail para o dono da loja
     await transporter.sendMail({
-      from: `"Loja de Carros" <${process.env.EMAIL_REMETENTE}>`,
+      from: `"Loja Felipe Carneiro Motors" <${process.env.EMAIL_REMETENTE}>`,
       to: process.env.EMAIL_DESTINO, // e-mail que vai receber a notificação
       subject: "Nova proposta de venda recebida",
       html: emailHtml,

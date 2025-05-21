@@ -10,7 +10,7 @@ export const criarPropostaFinanciamento = async (req, res) => {
     const propostaData = {
       nome,
       telefone,
-      whatsapp: Boolean(whatsapp),
+     whatsapp: whatsapp === "true" || whatsapp === true,
       email,
       veiculo,
       ...(cpf && { cpf }),
@@ -23,13 +23,16 @@ export const criarPropostaFinanciamento = async (req, res) => {
     });
 
     // Configurar transporte de e-mail
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_REMETENTE,
-        pass: process.env.SENHA_REMETENTE,
-      },
-    });
+   const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_REMETENTE,
+    pass: process.env.SENHA_REMETENTE,
+  },
+  tls: {
+    rejectUnauthorized: false, // 👈 Isso ignora o certificado autoassinado
+  },
+});
 
     // Conteúdo do e-mail
     const emailHtml = `
@@ -46,7 +49,7 @@ export const criarPropostaFinanciamento = async (req, res) => {
 
     // Enviar o e-mail
     await transporter.sendMail({
-      from: `"Loja de Carros" <${process.env.EMAIL_REMETENTE}>`,
+      from: `"Loja Felipe Carneiro Motors" <${process.env.EMAIL_REMETENTE}>`,
       to: process.env.EMAIL_DESTINO,
       subject: "Nova proposta de financiamento recebida",
       html: emailHtml,
