@@ -12,6 +12,7 @@ import adminRoutes from './Routes/adminRoutes.js';
 import MarcaRoutes from './Routes/MarcaRoutes.js';
 import fin from './Routes/financiamentoRoutes.js';
 import proposta from './Routes/propostaRoutes.js';
+import resetPassword from './Routes/resetPasswordRoutes.js';
 
 
 
@@ -41,6 +42,7 @@ app.use(adminRoutes); // Rotas de administradores
 app.use(MarcaRoutes); // Rotas de marcas
 app.use(fin); // Rotas de financiamento
 app.use(proposta); // Rotas de propostas
+app.use(resetPassword); // Rotas de redefinição de senha
 
 
 const port = process.env.PORT || 8000;

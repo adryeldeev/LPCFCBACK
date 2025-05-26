@@ -69,7 +69,7 @@ CREATE TABLE `propostaVenda` (
     `veiculo` VARCHAR(191) NOT NULL,
     `nome` VARCHAR(191) NOT NULL,
     `telefone` VARCHAR(191) NOT NULL,
-    `whatsapp` BOOLEAN NOT NULL DEFAULT false,
+    `whatsapp` BOOLEAN NULL DEFAULT false,
     `email` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
@@ -79,10 +79,10 @@ CREATE TABLE `propostaVenda` (
 -- CreateTable
 CREATE TABLE `financiamento` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `veiculo` VARCHAR(191) NOT NULL,
+    `veiculo` VARCHAR(191) NULL,
     `nome` VARCHAR(191) NOT NULL,
     `telefone` VARCHAR(191) NOT NULL,
-    `whatsapp` BOOLEAN NOT NULL DEFAULT false,
+    `whatsapp` BOOLEAN NULL DEFAULT false,
     `email` VARCHAR(191) NOT NULL,
     `dataNascimento` DATETIME(3) NULL,
     `cpf` VARCHAR(191) NULL,
