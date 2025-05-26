@@ -146,7 +146,7 @@ export const updateCarro = async (req, res) => {
   try {
     const carroExistente = await prisma.carro.findUnique({
       where: { id: Number(id) },
-      include: { imagens: true }
+     include: { imagens: true, marca: true }
     });
 
     if (!carroExistente) {
@@ -162,7 +162,7 @@ export const updateCarro = async (req, res) => {
 
     const data = {};
     if (modelo !== undefined) data.modelo = modelo;
-    if (marca !== undefined) {
+   if (marca !== undefined && !isNaN(Number(marca))) {
   data.marca = {
     connect: { id: Number(marca) }
   };
