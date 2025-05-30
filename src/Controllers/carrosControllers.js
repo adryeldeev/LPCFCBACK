@@ -77,14 +77,21 @@ console.log('req body :',req.body)
     if (descricao !== undefined) data.descricao = descricao;
     if (destaque !== undefined) data.destaque = destaque === "true" || destaque === true;
 
- const imagens = req.files?.map((file, index) => {
+ let imagens = req.files?.map((file, index) => {
   const principal = req.body[`principal_${index}`] === "true";
   return {
     url: file.filename,
     principal,
+    originalIndex: index // opcional, só se quiser rastrear a ordem original
   };
 });
-
+  
+// Coloca a principal primeiro
+imagens = imagens.sort((a, b) => {
+  if (a.principal) return -1;
+  if (b.principal) return 1;
+  return 0;
+});
     const carro = await prisma.carro.create({
       data: {
         ...data,
