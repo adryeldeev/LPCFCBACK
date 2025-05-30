@@ -26,6 +26,20 @@ export const getAllCarrosDestaque = async (req, res) => {
 };
 
 // GET – Público: todos os carros
+export const getAllCarros = async (req, res) => {
+  try {
+    const carros = await prisma.carro.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: { imagens: true, marca: true },
+    });
+    res.status(200).json(carros);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao buscar carros.' });
+  }
+};
+
+// create Carros
 export const createCarros = async (req, res) => {
   const {
     modelo,
