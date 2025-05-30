@@ -54,7 +54,7 @@ export const createCarros = async (req, res) => {
     descricao,
     destaque,
   } = req.body;
-
+console.log('req body :'req.body) 
   try {
     const data = {};
 

@@ -39,7 +39,9 @@ model marca {
 model imagem {
   id      Int    @id @default(autoincrement())
   url     String
+  principal Boolean @default(false)
   carroId Int
+
   carro   carro  @relation(fields: [carroId], references: [id])
 
   @@index([carroId], map: "imagem_carroId_fkey")
