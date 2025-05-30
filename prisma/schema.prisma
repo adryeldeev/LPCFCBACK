@@ -8,7 +8,7 @@ datasource db {
 }
 
 model carro {
-  id            Int       @id @default(autoincrement())
+  id            Int      @id @default(autoincrement())
   modelo        String
   ano           Int
   preco         Float
@@ -19,28 +19,30 @@ model carro {
   portas        Int?
   descricao     String?
   imagem        String?
-  destaque      Boolean   @default(false)
-  createdAt     DateTime  @default(now())
- updatedAt      DateTime  @updatedAt
+  destaque      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
   marcaId       Int
-  marca         marca     @relation(fields: [marcaId], references: [id])
-  imagens       imagem[]  // Relacionamento com imagens
- 
-}
+  marca         marca    @relation(fields: [marcaId], references: [id])
+  imagens       imagem[]
 
+  @@index([marcaId], map: "carro_marcaId_fkey")
+}
 
 model marca {
   id     Int     @id @default(autoincrement())
   nome   String  @unique
   logo   String
-  carros carro[] // Relacionamento com os carros
+  carros carro[]
 }
 
 model imagem {
   id      Int    @id @default(autoincrement())
   url     String
   carroId Int
-  carro   carro  @relation(fields: [carroId], references: [id]) // Relacionamento com carro
+  carro   carro  @relation(fields: [carroId], references: [id])
+
+  @@index([carroId], map: "imagem_carroId_fkey")
 }
 
 model user {
@@ -61,28 +63,28 @@ model vendedor {
 }
 
 model propostaVenda {
-  id          Int      @id @default(autoincrement())
-  veiculo     String
-  nome        String
-  telefone    String
-  whatsapp    Boolean?  @default(false)
-  email       String
-  createdAt   DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  veiculo   String
+  nome      String
+  telefone  String
+  whatsapp  Boolean? @default(false)
+  email     String
+  createdAt DateTime @default(now())
 }
 
 model financiamento {
-  id          Int      @id @default(autoincrement())
-  veiculo     String?
-  nome        String
-  telefone    String
-  whatsapp    Boolean?  @default(false)
-  email       String
+  id             Int       @id @default(autoincrement())
+  veiculo        String?
+  nome           String
+  telefone       String
+  whatsapp       Boolean?  @default(false)
+  email          String
   dataNascimento DateTime?
-  cpf       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
+  cpf            String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 }
+
 enum user_role {
   ADMIN
   USER

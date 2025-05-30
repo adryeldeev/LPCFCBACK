@@ -26,24 +26,7 @@ export const getAllCarrosDestaque = async (req, res) => {
 };
 
 // GET – Público: todos os carros
-export const getAllCarros = async (req, res) => {
-  
-  try {
-    const carros = await prisma.carro.findMany({
-      orderBy: { createdAt: 'desc' },
-       include: { imagens: true , marca:true},
-    });
-
-    res.status(200).json(carros);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Erro ao buscar carros.' });
-  }
-};
-
-// POST – Admin: criar carro com múltiplas imagens
 export const createCarros = async (req, res) => {
-
   const {
     modelo,
     marca,
@@ -59,37 +42,34 @@ export const createCarros = async (req, res) => {
   } = req.body;
 
   try {
-   
-
     const data = {};
+
     if (!ano || isNaN(Number(ano))) {
       return res.status(400).json({ message: "O campo 'ano' deve ser um número válido." });
     }
     if (!preco || isNaN(Number(preco))) {
       return res.status(400).json({ message: "O campo 'preco' deve ser um número válido." });
     }
+
     if (modelo !== undefined) data.modelo = modelo;
-    if (marca !== undefined) {
-  data.marca = {
-    connect: { id: Number(marca) }
-  };
-}
-    if (ano !== undefined) data.ano = parseInt(ano, 10); // Converte para Int
-    if (preco !== undefined) data.preco = parseFloat(preco.replace(",", "")); // Converte para Float
+    if (marca !== undefined) data.marca = { connect: { id: Number(marca) } };
+    if (ano !== undefined) data.ano = parseInt(ano, 10);
+    if (preco !== undefined) data.preco = parseFloat(preco.replace(",", ""));
     if (quilometragem !== undefined) data.quilometragem = parseInt(quilometragem, 10);
     if (portas !== undefined) data.portas = parseInt(portas, 10);
-    if (destaque !== undefined) {
-  data.destaque = destaque === "true" || destaque === true || destaque === 1 || destaque === "1";
-}
-
     if (cor !== undefined) data.cor = cor;
     if (combustivel !== undefined) data.combustivel = combustivel;
     if (cambio !== undefined) data.cambio = cambio;
     if (descricao !== undefined) data.descricao = descricao;
+    if (destaque !== undefined) data.destaque = destaque === "true" || destaque === true;
 
-    const imagens = req.files?.map(file => ({
-      url: file.filename,
-    }));
+ const imagens = req.files?.map((file, index) => {
+  const principal = req.body[`principal_${index}`] === "true";
+  return {
+    url: file.filename,
+    principal,
+  };
+});
 
     const carro = await prisma.carro.create({
       data: {
@@ -142,7 +122,9 @@ export const updateCarro = async (req, res) => {
     descricao,
     destaque,
   } = req.body;
-
+console.log("BODY:", req.body);
+console.log("FILES:", req.files);
+console.log("ID:", id);
   try {
     const carroExistente = await prisma.carro.findUnique({
       where: { id: Number(id) },
@@ -162,10 +144,9 @@ export const updateCarro = async (req, res) => {
 
     const data = {};
     if (modelo !== undefined) data.modelo = modelo;
-   if (marca !== undefined && !isNaN(Number(marca))) {
-  data.marca = {
-    connect: { id: Number(marca) }
-  };
+ const marcaId = Number(marca);
+if (marca !== undefined && marca !== '' && !isNaN(marcaId) && marcaId > 0) {
+  data.marca = { connect: { id: marcaId } };
 }
     if (ano !== undefined) data.ano = ano;
     if (preco !== undefined) data.preco = preco;
@@ -178,33 +159,35 @@ export const updateCarro = async (req, res) => {
     if (destaque !== undefined) data.destaque = destaque;
 
     // Se vierem novas imagens
-    if (req.files && req.files.length > 0) {
-      // Deleta imagens antigas do disco
-      for (const imagem of carroExistente.imagens) {
-        const caminho = path.join(__dirname, '../../Uploads/carros', imagem.url);
-        if (fs.existsSync(caminho)) {
-          fs.unlinkSync(caminho);
-        }
-      }
-
-      // Remove imagens antigas do banco
-      await prisma.imagem.deleteMany({
-        where: { carroId: Number(id) }
-      });
-
-      // Cria novas imagens
-      const novasImagens = req.files.map(file => ({
-        url: file.filename,
-        carroId: Number(id)
-      }));
-
-      await prisma.imagem.createMany({ data: novasImagens });
+ if (req.files && req.files.length > 0) {
+  // deletar antigas
+  for (const imagem of carroExistente.imagens) {
+    const caminho = path.join(__dirname, '../../Uploads/carros', imagem.url);
+    if (fs.existsSync(caminho)) {
+      fs.unlinkSync(caminho);
     }
+  }
+  
+
+  // salvar novas imagens
+  const novasImagens = req.files.map((file) => ({
+    url: file.filename,
+    carroId: carroExistente.id,
+  }));
+
+  await prisma.imagem.deleteMany({
+    where: { carroId: carroExistente.id },
+  });
+
+  await prisma.imagem.createMany({
+    data: novasImagens,
+  });
+}
 
     const carroAtualizado = await prisma.carro.update({
       where: { id: Number(id) },
       data,
-      include: { imagens: true }
+      include: { imagens: true, marca:true }
     });
 
     res.status(200).json(carroAtualizado);
