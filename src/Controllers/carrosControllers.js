@@ -192,36 +192,43 @@ export const updateCarro = async (req, res) => {
     if (destaque !== undefined) data.destaque = destaque === "true" || destaque === true;
 
     // Se vierem novas imagens
-    if (req.files && req.files.length > 0) {
-      // Apagar imagens antigas
-      for (const imagem of carroExistente.imagens) {
-        const caminho = path.join(__dirname, '../../Uploads/carros', imagem.url);
-        if (fs.existsSync(caminho)) {
-          fs.unlinkSync(caminho);
-        }
-      }
-
-      // Deletar no banco
-      await prisma.imagem.deleteMany({
-        where: { carroId: carroExistente.id },
-      });
-
-      // Salvar novas imagens com controle de 'principal'
-      const novasImagens = req.files.map((file, index) => {
-        const principal = req.body[`principal_${index}`] === "true";
-        return {
-          url: file.filename,
-          principal,
-          carroId: carroExistente.id
-        };
-      });
-
-      await prisma.imagem.createMany({
-        data: novasImagens,
-      });
+   if (req.files && req.files.length > 0) {
+  // Apagar imagens antigas
+  for (const imagem of carroExistente.imagens) {
+    const caminho = path.join(__dirname, '../../Uploads/carros', imagem.url);
+    if (fs.existsSync(caminho)) {
+      fs.unlinkSync(caminho);
     }
+  }
 
-    const carroAtualizado = await prisma.carro.update({
+  // Deletar no banco
+  await prisma.imagem.deleteMany({
+    where: { carroId: carroExistente.id },
+  });
+
+  // Construir novas imagens e colocar a principal primeiro
+  let imagens = req.files.map((file, index) => {
+    const principal = req.body[`principal_${index}`] === true || req.body[`principal_${index}`] === 'true';
+    return {
+      url: file.filename,
+      principal,
+      carroId: carroExistente.id,
+    };
+  });
+
+  // Garante que a imagem principal venha primeiro (opcional, só se o front precisar disso)
+ imagens = imagens.sort((a, b) => (b.principal ? 1 : 0) - (a.principal ? 1 : 0));
+
+  // Se nenhuma imagem foi marcada como principal, define a primeira como principal
+  const algumaPrincipal = imagens.some((img) => img.principal);
+  if (!algumaPrincipal && imagens.length > 0) {
+    imagens[0].principal = true;
+  }
+
+  await prisma.imagem.createMany({ data: imagens });
+}
+
+    const carroAtualizado = await prisma.carros.update({
       where: { id: Number(id) },
       data,
       include: { imagens: true, marca: true }
