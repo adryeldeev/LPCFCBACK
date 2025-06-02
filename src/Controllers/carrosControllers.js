@@ -84,20 +84,30 @@ export const createCarros = async (req, res) => {
     if (descricao !== undefined) data.descricao = descricao;
     if (destaque !== undefined) data.destaque = destaque === "true" || destaque === true;
 
-    let imagens = Array.isArray(req.files)
-      ? req.files.map((file, index) => {
-          const principal = req.body[`principal_${index}`] === "true";
-          return {
-            url: file.filename,
-            principal,
-          };
-        })
-      : [];
+    let imagens = [];
 
-    if (imagens.length > 0) {
-      imagens = imagens.sort((a, b) => (a.principal ? -1 : b.principal ? 1 : 0));
-      data.imagens = { create: imagens };
-    }
+if (Array.isArray(req.files)) {
+  let principalSet = false;
+
+  imagens = req.files.map((file, index) => {
+    const isPrincipal = req.body[`principal_${index}`] === true || req.body[`principal_${index}`] === 'true';
+    const principal = isPrincipal && !principalSet;
+
+    if (principal) principalSet = true;
+
+    return {
+      url: file.filename,
+      principal,
+    };
+  });
+
+  // Se nenhuma imagem foi marcada como principal, define a primeira como principal
+  if (!imagens.some(img => img.principal) && imagens.length > 0) {
+    imagens[0].principal = true;
+  }
+
+  data.imagens = { create: imagens };
+}
 
     const carro = await prisma.carro.create({
       data,
