@@ -54,58 +54,60 @@ export const createCarros = async (req, res) => {
     descricao,
     destaque,
   } = req.body;
-console.log('req body :',req.body) 
+
+  console.log('req.body:', req.body);
+  console.log('req.files:', req.files);
+
   try {
     const data = {};
 
     if (!ano || isNaN(Number(ano))) {
       return res.status(400).json({ message: "O campo 'ano' deve ser um número válido." });
     }
+
     if (!preco || isNaN(Number(preco))) {
       return res.status(400).json({ message: "O campo 'preco' deve ser um número válido." });
     }
 
     if (modelo !== undefined) data.modelo = modelo;
-    if (marca !== undefined) data.marca = { connect: { id: Number(marca) } };
-    if (ano !== undefined) data.ano = parseInt(ano, 10);
-    if (preco !== undefined) data.preco = parseFloat(preco.replace(",", ""));
-    if (quilometragem !== undefined) data.quilometragem = parseInt(quilometragem, 10);
-    if (portas !== undefined) data.portas = parseInt(portas, 10);
+    if (marca && !isNaN(Number(marca))) {
+      data.marca = { connect: { id: Number(marca) } };
+    }
+    data.ano = parseInt(ano, 10);
+    data.preco = parseFloat(preco.replace(",", ""));
+
+    if (quilometragem && !isNaN(Number(quilometragem))) data.quilometragem = parseInt(quilometragem, 10);
+    if (portas && !isNaN(Number(portas))) data.portas = parseInt(portas, 10);
     if (cor !== undefined) data.cor = cor;
     if (combustivel !== undefined) data.combustivel = combustivel;
     if (cambio !== undefined) data.cambio = cambio;
     if (descricao !== undefined) data.descricao = descricao;
     if (destaque !== undefined) data.destaque = destaque === "true" || destaque === true;
 
- let imagens = req.files?.map((file, index) => {
-  const principal = req.body[`principal_${index}`] === "true";
-  return {
-    url: file.filename,
-    principal,
-    originalIndex: index // opcional, só se quiser rastrear a ordem original
-  };
-});
-  
-// Coloca a principal primeiro
-imagens = imagens.sort((a, b) => {
-  if (a.principal) return -1;
-  if (b.principal) return 1;
-  return 0;
-});
+    let imagens = Array.isArray(req.files)
+      ? req.files.map((file, index) => {
+          const principal = req.body[`principal_${index}`] === "true";
+          return {
+            url: file.filename,
+            principal,
+          };
+        })
+      : [];
+
+    if (imagens.length > 0) {
+      imagens = imagens.sort((a, b) => (a.principal ? -1 : b.principal ? 1 : 0));
+      data.imagens = { create: imagens };
+    }
+
     const carro = await prisma.carro.create({
-      data: {
-        ...data,
-        imagens: {
-          create: imagens
-        }
-      },
+      data,
       include: { imagens: true }
     });
 
     res.status(201).json(carro);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Erro ao criar carro.' });
+    console.error('Erro ao criar carro:', error.message, error);
+    res.status(500).json({ message: 'Erro ao criar carro.', erro: error.message });
   }
 };
 
