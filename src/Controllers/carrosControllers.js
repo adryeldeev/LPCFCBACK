@@ -155,7 +155,7 @@ export const updateCarro = async (req, res) => {
     descricao,
     destaque,
   } = req.body;
-
+console.log('req', req.body)
   try {
     const carroExistente = await prisma.carro.findUnique({
       where: { id: Number(id) },
@@ -228,7 +228,7 @@ export const updateCarro = async (req, res) => {
   await prisma.imagem.createMany({ data: imagens });
 }
 
-    const carroAtualizado = await prisma.carros.update({
+    const carroAtualizado = await prisma.carro.update({
       where: { id: Number(id) },
       data,
       include: { imagens: true, marca: true }
