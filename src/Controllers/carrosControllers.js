@@ -155,7 +155,8 @@ export const updateCarro = async (req, res) => {
     descricao,
     destaque,
   } = req.body;
-console.log('req', req.body)
+console.log("🔵 Arquivos recebidos:", req.files);
+console.log("🔵 Principais:", req.body);
   try {
     const carroExistente = await prisma.carro.findUnique({
       where: { id: Number(id) },
