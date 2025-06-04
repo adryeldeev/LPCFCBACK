@@ -17,7 +17,7 @@ model carro {
   combustivel   String?
   cambio        String?
   portas        Int?
-  descricao     String?
+ descricao String? @db.VarChar(10000) 
   imagem        String?
   destaque      Boolean  @default(false)
   createdAt     DateTime @default(now())
