@@ -6,16 +6,21 @@ export const criarPropostaVenda = async (req, res) => {
   const { nome, telefone, whatsapp, email, veiculo } = req.body;
 
   try {
+      console.log("📧 Email remetente:", process.env.EMAIL_REMETENTE);
+    console.log("🔐 Senha remetente:", process.env.SENHA_REMETENTE ? "definida" : "NÃO definida");
+    console.log("📬 Email destino:", process.env.EMAIL_DESTINO);
     // Salva no banco
-    const proposta = await prisma.propostaVenda.create({
-      data: {
-        nome,
-        telefone,
-        whatsapp: Boolean(whatsapp),
-        email,
-        veiculo
-      },
-    });
+  
+  const proposta = await prisma.propostaVenda.create({
+  data: {
+    nome,
+    telefone,
+    email,
+    veiculo,
+    ...(whatsapp !== undefined && { whatsapp: Boolean(whatsapp) }), // Só inclui se foi enviado
+  },
+});
+   
 
     // Configurar o transporte do e-mail
     const transporter = nodemailer.createTransport({
