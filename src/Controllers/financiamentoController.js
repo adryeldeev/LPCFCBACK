@@ -7,15 +7,15 @@ export const criarPropostaFinanciamento = async (req, res) => {
 
   try {
     // Constrói o objeto dinamicamente, incluindo apenas os campos opcionais se estiverem preenchidos
-    const propostaData = {
-      nome,
-      telefone,
-     whatsapp: whatsapp === "true" || whatsapp === true,
-      email,
-      veiculo,
-      ...(cpf && { cpf }),
-      ...(dataNascimento && { dataNascimento: new Date(dataNascimento) }),
-    };
+   const propostaData = {
+  nome,
+  telefone,
+  email,
+  veiculo,
+  ...(whatsapp !== undefined && { whatsapp: whatsapp === "true" || whatsapp === true }),
+  ...(cpf && { cpf }),
+  ...(dataNascimento && { dataNascimento: new Date(dataNascimento) }),
+};
 
     // Salva no banco
     const proposta = await prisma.financiamento.create({
