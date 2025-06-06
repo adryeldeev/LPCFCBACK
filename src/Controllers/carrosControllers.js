@@ -157,6 +157,7 @@ export const updateCarro = async (req, res) => {
   } = req.body;
 console.log("🔵 Arquivos recebidos:", req.files);
 console.log("🔵 Principais:", req.body);
+
   try {
     const carroExistente = await prisma.carro.findUnique({
       where: { id: Number(id) },
@@ -166,6 +167,8 @@ console.log("🔵 Principais:", req.body);
     if (!carroExistente) {
       return res.status(404).json({ message: 'Carro não encontrado.' });
     }
+// Verifica se o destaque foi enviado e se é um booleano
+const destaqueBoolean = destaque === "true" || destaque === true;
 
    if (
   destaque !== undefined &&                 // veio na requisição
