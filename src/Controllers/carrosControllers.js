@@ -167,12 +167,16 @@ console.log("🔵 Principais:", req.body);
       return res.status(404).json({ message: 'Carro não encontrado.' });
     }
 
-    if (destaque && !carroExistente.destaque) {
-      const count = await prisma.carro.count({ where: { destaque: true } });
-      if (count >= 3) {
-        return res.status(400).json({ message: 'Máximo de 3 carros em destaque já atingido.' });
-      }
-    }
+   if (
+  destaque !== undefined &&                 // veio na requisição
+  destaqueBoolean === true &&               // está tentando ativar destaque
+  carroExistente.destaque === false         // o carro ainda não é destaque
+) {
+  const count = await prisma.carro.count({ where: { destaque: true } });
+  if (count >= 3) {
+    return res.status(400).json({ message: 'Máximo de 3 carros em destaque já atingido.' });
+  }
+}
 
     const data = {};
     if (modelo !== undefined) data.modelo = modelo;
