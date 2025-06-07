@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient(); // ajuste o caminho se precisar
 // Criar marca
 export const createMarca = async (req, res) => {
+  
   try {
     const { nome } = req.body;
 
@@ -29,6 +30,19 @@ export const createMarca = async (req, res) => {
     return res.status(500).json({ error: "Erro interno" });
   }
 };
+// Listar todas as marcas
+
+export const getAllMarcas = async (req,res)=>{
+  try {
+    const marcas = await prisma.marca.findMany();
+    return res.json(marcas);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Erro interno" });
+  }
+}
+
+
 
 // Listar todas
 export const getMarcas = async (_req , res) => {
@@ -41,6 +55,24 @@ export const getMarcas = async (_req , res) => {
   }
 };
 
+// Listar por ID
+export const getByIdMarcas = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const marca = await prisma.marca.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!marca) return res.status(404).json({ error: "Marca não encontrada" });
+
+    return res.json(marca);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Erro interno" });
+  }
+};
+
+
 // Editar marca
 export const updateMarca = async (req, res) => {
   try {
@@ -48,6 +80,24 @@ export const updateMarca = async (req, res) => {
     const { nome } = req.body;
     const logo = req.file ? `/uploads/logos/${req.file.filename}` : undefined;
 
+    // Buscar marca existente
+    const marcaExistente = await prisma.marca.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!marcaExistente) {
+      return res.status(404).json({ error: "Marca não encontrada" });
+    }
+
+    // Se há imagem nova, deletar a antiga do servidor
+    if (logo && marcaExistente.logo) {
+      const caminhoAntigo = path.join(__dirname, '../../Uploads/logos', marcaExistente.logo);
+      if (fs.existsSync(caminhoAntigo)) {
+        fs.unlinkSync(caminhoAntigo);
+      }
+    }
+
+    // Atualizar os dados
     const dataToUpdate = {};
     if (nome) dataToUpdate.nome = nome;
     if (logo) dataToUpdate.logo = logo;
@@ -57,7 +107,7 @@ export const updateMarca = async (req, res) => {
       data: dataToUpdate,
     });
 
-    return res.json(marca);
+    return  res.status(200).json(marca);
   } catch (error) {
     if (error.code === "P2025") {
       return res.status(404).json({ error: "Marca não encontrada" });
