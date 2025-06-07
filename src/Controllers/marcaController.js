@@ -79,6 +79,8 @@ export const updateMarca = async (req, res) => {
     const { id } = req.params;
     const { nome } = req.body;
     const logo = req.file ? `/uploads/logos/${req.file.filename}` : undefined;
+    console.log('Logo recebido:', logo);
+
 
     // Buscar marca existente
     const marcaExistente = await prisma.marca.findUnique({
