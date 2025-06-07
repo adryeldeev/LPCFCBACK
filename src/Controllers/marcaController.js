@@ -78,26 +78,27 @@ export const updateMarca = async (req, res) => {
   try {
     const { id } = req.params;
     const { nome } = req.body;
-    const logo = req.file ? `/uploads/logos/${req.file.filename}` : undefined;
-    console.log('Logo recebido:', logo);
+   const logo = req.file ? `/uploads/logos/${req.file.filename}` : undefined;
+console.log('Logo recebido:', logo);
 
+// Buscar marca existente
+const marcaExistente = await prisma.marca.findUnique({
+  where: { id: Number(id) },
+});
 
-    // Buscar marca existente
-    const marcaExistente = await prisma.marca.findUnique({
-      where: { id: Number(id) },
-    });
+if (!marcaExistente) {
+  return res.status(404).json({ error: "Marca não encontrada" });
+}
 
-    if (!marcaExistente) {
-      return res.status(404).json({ error: "Marca não encontrada" });
-    }
+// Se há imagem nova, deletar a antiga do servidor
+if (logo && marcaExistente.logo) {
+  const nomeDoArquivoAntigo = path.basename(marcaExistente.logo); // extrai apenas o nome do arquivo
+  const caminhoAntigo = path.join(__dirname, '../Uploads/logos', nomeDoArquivoAntigo); // corrige o caminho
 
-    // Se há imagem nova, deletar a antiga do servidor
-    if (logo && marcaExistente.logo) {
-      const caminhoAntigo = path.join(__dirname, '../../Uploads/logos', marcaExistente.logo);
-      if (fs.existsSync(caminhoAntigo)) {
-        fs.unlinkSync(caminhoAntigo);
-      }
-    }
+  if (fs.existsSync(caminhoAntigo)) {
+    fs.unlinkSync(caminhoAntigo); // deleta o antigo
+  }
+}
 
     // Atualizar os dados
     const dataToUpdate = {};
