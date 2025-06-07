@@ -2,6 +2,11 @@ import path from 'path';
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient(); // ajuste o caminho se precisar
 // Criar marca
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 export const createMarca = async (req, res) => {
   
   try {
