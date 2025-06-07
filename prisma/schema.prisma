@@ -20,12 +20,12 @@ model carro {
  descricao String? @db.VarChar(10000) 
   imagem        String?
   destaque      Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+ 
   marcaId       Int
   marca         marca    @relation(fields: [marcaId], references: [id])
   imagens       imagem[]
-
+ createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
   @@index([marcaId], map: "carro_marcaId_fkey")
 }
 
@@ -34,6 +34,10 @@ model marca {
   nome   String  @unique
   logo   String
   carros carro[]
+  createdAt  DateTime @default(now())
+   updatedAt DateTime @default(now())
+  @@index([logo], map: "marca_logo_key")
+  
 }
 
 model imagem {
@@ -41,8 +45,10 @@ model imagem {
   url     String
   principal Boolean @default(false)
   carroId Int
-
   carro   carro  @relation(fields: [carroId], references: [id])
+   createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
 
   @@index([carroId], map: "imagem_carroId_fkey")
 }

@@ -80,6 +80,24 @@ export const updateMarca = async (req, res) => {
     const { nome } = req.body;
     const logo = req.file ? `/uploads/logos/${req.file.filename}` : undefined;
 
+    // Buscar marca existente
+    const marcaExistente = await prisma.marca.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!marcaExistente) {
+      return res.status(404).json({ error: "Marca não encontrada" });
+    }
+
+    // Se há imagem nova, deletar a antiga do servidor
+    if (logo && marcaExistente.logo) {
+      const caminhoAntigo = path.join(__dirname, '../../Uploads/logos', marcaExistente.logo);
+      if (fs.existsSync(caminhoAntigo)) {
+        fs.unlinkSync(caminhoAntigo);
+      }
+    }
+
+    // Atualizar os dados
     const dataToUpdate = {};
     if (nome) dataToUpdate.nome = nome;
     if (logo) dataToUpdate.logo = logo;
@@ -89,7 +107,7 @@ export const updateMarca = async (req, res) => {
       data: dataToUpdate,
     });
 
-    return res.json(marca);
+    return  res.status(200).json(marca);
   } catch (error) {
     if (error.code === "P2025") {
       return res.status(404).json({ error: "Marca não encontrada" });
