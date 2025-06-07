@@ -1,3 +1,4 @@
+import path from 'path';
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient(); // ajuste o caminho se precisar
 // Criar marca
